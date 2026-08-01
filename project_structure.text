@@ -1,0 +1,51 @@
+- docker-compose.yml
+- gateway
+- infrastructure
+  - docker
+  - grafana
+  - nginx
+  - prometheus
+- packages
+  - auth-lib
+  - logger
+  - shared-utils
+- services
+  - auth-service
+    - .env
+    - .gitignore
+    - Dockerfile
+    - package-lock.json
+    - package.json
+    - src
+      - app.js
+      - config
+        - db.js
+        - index.js
+        - logger.js
+        - prometheus.js
+        - queue.js
+        - queueManager.js
+        - redis.js
+        - swagger.js
+      - controllers
+        - authController.js
+      - middleware
+        - asyncHandler.js
+        - authMiddleware.js
+        - errorHandler.js
+        - notFound.js
+        - rateLimiter.js
+      - models
+        - Driver.js
+        - RefreshToken.js
+        - User.js
+      - routes
+        - authRoutes.js
+      - server.js
+      - services
+        - authService.js
+      - utils
+        - AppError.js
+        - jwt.js
+  - driver-service
+  - job-service
