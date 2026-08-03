@@ -1,19 +1,13 @@
-const { createClient } =
-    require("redis");
+const { createClient } = require("redis");
 
-const redisClient =
-    createClient({
-        url: "redis://redis:6379"
-    });
+const config = require("./index");
 
-redisClient.on(
-    "error",
-    (err) =>
-        console.log(
-            "Redis Error",
-            err
-        )
-);
+const redisClient = createClient({
+    url: `redis://${config.redis.host}:${config.redis.port}`,
+});
 
-module.exports =
-    redisClient;
+redisClient.on("error", (err) => {
+    console.error("Redis Error", err);
+});
+
+module.exports = redisClient;

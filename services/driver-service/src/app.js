@@ -4,6 +4,7 @@ const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const compression = require("compression");
+const driverRoutes = require("./routes/driverRoutes");
 
 const app = express();
 
@@ -14,5 +15,10 @@ app.use(cors());
 app.use(compression());
 
 app.use(express.json());
+
+app.use(
+    "/api/v1/drivers",
+    driverRoutes
+);
 
 module.exports = app;
