@@ -1,6 +1,9 @@
 const { Worker } = require("bullmq");
 const logger = require("../config/logger");
 const config = require("../config/index");
+const {
+    processImport
+}=require("../processors/importProcessor");
 
 logger.info(`Connecting to Redis at ${config.redis.host}:${config.redis.port}`);
 const worker = new Worker(
@@ -11,6 +14,7 @@ const worker = new Worker(
             jobId: job.id,
             payload: job.data
         });
+        await processImport(job);
 
     },
     {
