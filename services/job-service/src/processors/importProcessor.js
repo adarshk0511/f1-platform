@@ -1,4 +1,5 @@
-const Job = require("../models/Job");
+const jobPersistenceService =
+require("../services/jobPersistenceService");
 const logger = require("../config/logger");
 
 const sleep = (ms) =>
@@ -8,46 +9,30 @@ const sleep = (ms) =>
 
 async function processImport(job) {
 
-    logger.info(
-        `Processing Job ${job.id}`
-    );
+    const dbJob =
+        await jobPersistenceService.createJob(job);
 
-    // Create DB entry
-    try{
-        const dbJob = await Job.create({
+    try {
 
-        bullJobId: job.id,
-
-        type: "IMPORT_RACE",
-
-        status: "PROCESSING",
-
-        payload: job.data,
-
-    });
-    }
-    catch(err){
-        logger.error(
-            `Error creating job in DB for Job ${job.id}: ${err.message}`
+        logger.info(
+            `Processing Job ${job.id}`
         );
+
+        await sleep(5000);
+
+        await jobPersistenceService.markCompleted(dbJob);
+
+    } catch (err) {
+
+        await jobPersistenceService.markFailed(
+            dbJob,
+            err
+        );
+
         throw err;
+
     }
-    
 
-    logger.info(
-        `Mongo Job Created : ${dbJob._id}`
-    );
-
-    // Simulate processing
-    await sleep(5000);
-
-    dbJob.status = "COMPLETED";
-
-    await dbJob.save();
-
-    logger.info(
-        `Job ${job.id} Completed`
-    );
 }
 
 module.exports = {

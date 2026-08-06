@@ -27,6 +27,11 @@ const jobSchema = new mongoose.Schema(
         payload: {
             type: Object,
         },
+
+        error: {
+    type: String,
+    default: null
+},
     },
     {
         timestamps: true,
