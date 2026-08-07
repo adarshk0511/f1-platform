@@ -44,6 +44,16 @@ async function findByBullJobId(jobId) {
 
 }
 
+async function getJobStatus(jobId) {
+
+    return await Job.findOne({
+
+        bullJobId: jobId
+
+    });
+
+}
+
 module.exports = {
 
     createJob,
@@ -52,6 +62,8 @@ module.exports = {
 
     markFailed,
 
-    findByBullJobId
+    findByBullJobId,
+
+    getJobStatus
 
 };
