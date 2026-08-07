@@ -4,10 +4,31 @@ const importRace = async (
 ) => {
 
     const job =
-    await importQueue.add(
-        "import-race",
-        payload
-    );
+await importQueue.add(
+
+    "import-race",
+
+    payload,
+
+    {
+
+        attempts: 3,
+
+        backoff: {
+
+            type: "exponential",
+
+            delay: 2000
+
+        },
+
+        removeOnComplete: false,
+
+        removeOnFail: false
+
+    }
+
+);
     return {
 
         success: true,

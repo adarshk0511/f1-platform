@@ -9,6 +9,8 @@ const sleep = (ms) =>
 
 async function processImport(job) {
 
+    
+
     const dbJob =
         await jobPersistenceService.createJob(job);
 
@@ -17,6 +19,16 @@ async function processImport(job) {
         logger.info(
             `Processing Job ${job.id}`
         );
+
+        if(job.data.raceName==="FAIL"){
+
+    throw new Error(
+
+        "Simulated Failure"
+
+    );
+
+}
 
         await sleep(5000);
 

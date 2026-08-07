@@ -76,11 +76,27 @@ async function startWorker() {
 
         });
 
-        worker.on("failed", (job, err) => {
+        worker.on(
 
-            logger.error(err);
+    "failed",
 
-        });
+    (job, err)=>{
+
+        logger.error({
+
+            jobId:job.id,
+
+            attempt:job.attemptsMade,
+
+            maxAttempts:
+
+                job.opts.attempts
+
+        },err.message);
+
+    }
+
+);
 
     } catch (err) {
 
