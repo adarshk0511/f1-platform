@@ -6,13 +6,14 @@
     "test": "jest --runInBand --setupFilesAfterEnv ./tests/setup.js",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "worker":"node src/workers/importWorker.js"
+    "worker": "node src/workers/importWorker.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "axios": "^1.19.0",
     "bcrypt": "^6.0.0",
     "bullmq": "^5.78.1",
     "compression": "^1.8.1",

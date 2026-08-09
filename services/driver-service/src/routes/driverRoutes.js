@@ -18,6 +18,10 @@ const {
   getDriversByTeamStats
 } = require("../controllers/driverController");
 
+const {
+    importRace
+} = require("../controllers/importController");
+
 const validateDriver = require("../middleware/validateDriver");
 const apiKey = require("../middleware/apiKey");
 
@@ -58,6 +62,13 @@ router.get(
     "/stats/team",
     authenticate,
     getDriversByTeamStats
+);
+
+router.post(
+    "/import-race",
+    apiKey,
+    authenticate,
+    importRace
 );
 
 router.get("/:abbr", getDriverByAbbreviation);
