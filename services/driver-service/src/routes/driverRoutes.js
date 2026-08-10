@@ -17,6 +17,9 @@ const {
   getTeamStats,
   getDriversByTeamStats
 } = require("../controllers/driverController");
+const {
+    getJobStatus
+} = require("../controllers/jobController");
 
 const {
     importRace
@@ -69,6 +72,13 @@ router.post(
     apiKey,
     authenticate,
     importRace
+);
+
+router.get(
+    "/jobs/:jobId",
+    apiKey,
+    authenticate,
+    getJobStatus
 );
 
 router.get("/:abbr", getDriverByAbbreviation);

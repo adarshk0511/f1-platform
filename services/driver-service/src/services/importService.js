@@ -1,13 +1,29 @@
-const jobClient = require("../clients/jobClient");
+const jobClient =
+    require("../clients/jobClient");
+
 
 const importRace = async (payload) => {
 
-    const result =
-        await jobClient.importRace(payload);
+    return await jobClient.importRace(
+        payload
+    );
 
-    return result;
 };
 
+
+const getJobStatus = async (jobId) => {
+
+    return await jobClient.getJobStatus(
+        jobId
+    );
+
+};
+
+
 module.exports = {
-    importRace
+
+    importRace,
+
+    getJobStatus
+
 };
