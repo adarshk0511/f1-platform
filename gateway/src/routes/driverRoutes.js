@@ -17,6 +17,10 @@ router.use(
 
         changeOrigin: true,
 
+        timeout: 10000,
+
+        proxyTimeout: 10000,
+
         pathRewrite: (path) => {
 
             return `/api/v1/drivers${path}`;
@@ -31,7 +35,6 @@ router.use(
                     `[Gateway] ${req.method} ${req.originalUrl} -> Driver Service`
                 );
 
-                // Re-attach JSON body after express.json()
                 fixRequestBody(
                     proxyReq,
                     req
@@ -39,12 +42,32 @@ router.use(
 
             },
 
-            error: (err) => {
+            proxyRes: (proxyRes, req) => {
+
+                console.log(
+                    `[Gateway] Driver responded ${proxyRes.statusCode}`
+                );
+
+            },
+
+            error: (err, req, res) => {
 
                 console.error(
-                    "[Gateway] Driver Service error:",
-                    err.message
+                    `[Gateway] Driver Service error: ${err.message}`
                 );
+
+                if (!res.headersSent) {
+
+                    res.status(503).json({
+
+                        success: false,
+
+                        message:
+                            "Driver Service unavailable",
+
+                    });
+
+                }
 
             },
 
