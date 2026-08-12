@@ -2,6 +2,9 @@ const express = require("express");
 
 const router = express.Router();
 
+const authenticateService =
+    require("../middleware/serviceAuth");
+    
 const {
     importRace,
     getJobStatus,
@@ -9,6 +12,7 @@ const {
 
 router.post(
     "/import",
+    authenticateService,
     importRace
 );
 

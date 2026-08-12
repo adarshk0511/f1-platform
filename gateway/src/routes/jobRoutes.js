@@ -35,6 +35,12 @@ router.use(
                     `[Gateway] ${req.method} ${req.originalUrl} -> Job Service`
                 );
 
+
+    proxyReq.setHeader(
+        "X-Service-Key",
+        config.services.job.internalKey
+    );
+
                 fixRequestBody(
                     proxyReq,
                     req

@@ -18,6 +18,9 @@ const config = {
             url:
                 process.env.JOB_SERVICE_URL ||
                 "http://localhost:5003",
+
+            internalKey:
+        process.env.JOB_SERVICE_INTERNAL_KEY,
         },
     },
 };
