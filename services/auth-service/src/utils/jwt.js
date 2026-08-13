@@ -1,4 +1,14 @@
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
+
+const PRIVATE_KEY = fs.readFileSync(
+    path.join(
+        __dirname,
+        "../../keys/access-token-private.pem"
+    ),
+    "utf8"
+);
 
 const generateAccessToken = (user) => {
 
@@ -10,15 +20,17 @@ const generateAccessToken = (user) => {
             role: user.role,
         },
 
-        process.env.ACCESS_TOKEN_SECRET,
+        PRIVATE_KEY,
 
         {
+            algorithm: "RS256",
             expiresIn: "15m",
         }
 
     );
 
 };
+
 
 const generateRefreshToken = (user) => {
 
@@ -37,6 +49,7 @@ const generateRefreshToken = (user) => {
     );
 
 };
+
 
 module.exports = {
 
