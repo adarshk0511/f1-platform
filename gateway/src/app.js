@@ -1,5 +1,8 @@
 const express = require("express");
 
+const authenticate =
+    require("./middleware/authMiddleware");
+
 const driverRoutes =
     require("./routes/driverRoutes");
 const authRoutes =
@@ -22,6 +25,7 @@ app.get("/health", (req, res) => {
 
 app.use(
     "/api/v1/drivers",
+    authenticate,
     driverRoutes
 );
 
