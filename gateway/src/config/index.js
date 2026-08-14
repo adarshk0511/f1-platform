@@ -6,6 +6,10 @@ const config = {
             url:
                 process.env.DRIVER_SERVICE_URL ||
                 "http://localhost:5002",
+
+            
+            internalKey:
+                process.env.GATEWAY_INTERNAL_KEY,
         },
 
         auth: {

@@ -35,6 +35,11 @@ router.use(
                     `[Gateway] ${req.method} ${req.originalUrl} -> Driver Service`
                 );
 
+                 proxyReq.setHeader(
+                    "X-Gateway-Key",
+                    config.services.driver.internalKey
+                );
+
                 fixRequestBody(
                     proxyReq,
                     req

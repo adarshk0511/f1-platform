@@ -5,6 +5,8 @@ const helmet = require("helmet");
 const cors = require("cors");
 const compression = require("compression");
 const driverRoutes = require("./routes/driverRoutes");
+const gatewayAuth =
+    require("./middleware/gatewayAuth");
 
 const app = express();
 
@@ -18,6 +20,7 @@ app.use(express.json());
 
 app.use(
     "/api/v1/drivers",
+    gatewayAuth,
     driverRoutes
 );
 
