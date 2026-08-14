@@ -1,11 +1,24 @@
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
+
 const AppError = require("../utils/AppError");
 const logger = require("../config/logger");
+
+const PUBLIC_KEY = fs.readFileSync(
+    path.join(
+        __dirname,
+        "../../keys/access-token-public.pem"
+    ),
+    "utf8"
+);
 
 const authenticate = (req, res, next) => {
     try {
 
-        const authHeader = req.headers.authorization;
+        // 1. Read Authorization header
+        const authHeader =
+            req.headers.authorization;
 
         if (!authHeader) {
             throw new AppError(
@@ -14,6 +27,7 @@ const authenticate = (req, res, next) => {
             );
         }
 
+        // 2. Validate Bearer format
         if (!authHeader.startsWith("Bearer ")) {
             throw new AppError(
                 "Invalid Authorization header format",
@@ -21,13 +35,20 @@ const authenticate = (req, res, next) => {
             );
         }
 
-        const token = authHeader.split(" ")[1];
+        // 3. Extract token
+        const token =
+            authHeader.split(" ")[1];
 
+        // 4. Verify RS256 JWT
         const decoded = jwt.verify(
             token,
-            process.env.ACCESS_TOKEN_SECRET
+            PUBLIC_KEY,
+            {
+                algorithms: ["RS256"],
+            }
         );
 
+        // 5. Attach claims to request
         req.user = {
             id: decoded.id,
             email: decoded.email,
