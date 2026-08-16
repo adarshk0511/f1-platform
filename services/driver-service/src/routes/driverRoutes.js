@@ -26,7 +26,7 @@ const {
 } = require("../controllers/importController");
 
 const validateDriver = require("../middleware/validateDriver");
-const apiKey = require("../middleware/apiKey");
+//const apiKey = require("../middleware/apiKey");
 
 /**
  * @swagger
@@ -42,23 +42,26 @@ const apiKey = require("../middleware/apiKey");
  *       500:
  *         description: Internal Server Error.
  */
-router.get("/", apiKey, authenticate, cacheMiddleware("drivers"), getDrivers1);
+router.get("/", authenticate, cacheMiddleware("drivers"), getDrivers1);
 router.post("/", validateDriver, createDriver);
 
-router.get("/search/:keyword", searchDrivers);
+router.get("/search/:keyword", authenticate, searchDrivers);
 
 router.get(
     "/grid",
+    authenticate,
     getDriverGrid
 );
 
 router.get(
     "/stats",
+    authenticate,
     getDriverStats
 );
 
 router.get(
     "/team-stats",
+    authenticate,
     getTeamStats
 );
 router.get(
@@ -69,23 +72,21 @@ router.get(
 
 router.post(
     "/import-race",
-    apiKey,
     authenticate,
     importRace
 );
 
 router.get(
     "/jobs/:jobId",
-    apiKey,
     authenticate,
     getJobStatus
 );
 
-router.get("/:abbr", getDriverByAbbreviation);
-router.put("/:abbr",  updateDriver);
-router.delete("/:abbr", deleteDriver);
+router.get("/:abbr",authenticate, getDriverByAbbreviation);
+router.put("/:abbr", authenticate,  updateDriver);
+router.delete("/:abbr", authenticate, deleteDriver);
 
-router.get("/:team", getDriversByTeam);
+router.get("/:team", authenticate, getDriversByTeam);
 
 
 
