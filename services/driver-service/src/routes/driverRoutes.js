@@ -24,7 +24,8 @@ const {
 const {
     importRace
 } = require("../controllers/importController");
-
+const authorize =
+    require("../middleware/authorize");
 const validateDriver = require("../middleware/validateDriver");
 //const apiKey = require("../middleware/apiKey");
 
@@ -43,7 +44,8 @@ const validateDriver = require("../middleware/validateDriver");
  *         description: Internal Server Error.
  */
 router.get("/", authenticate, cacheMiddleware("drivers"), getDrivers1);
-router.post("/", validateDriver, createDriver);
+router.post("/", authenticate,
+    authorize("admin"), validateDriver, createDriver);
 
 router.get("/search/:keyword", authenticate, searchDrivers);
 
@@ -83,8 +85,8 @@ router.get(
 );
 
 router.get("/:abbr",authenticate, getDriverByAbbreviation);
-router.put("/:abbr", authenticate,  updateDriver);
-router.delete("/:abbr", authenticate, deleteDriver);
+router.put("/:abbr", authenticate, authorize("admin"),  updateDriver);
+router.delete("/:abbr", authenticate, authorize("admin"), deleteDriver);
 
 router.get("/:team", authenticate, getDriversByTeam);
 
