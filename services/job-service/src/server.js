@@ -6,6 +6,7 @@ const logger = require("./config/logger");
 const app = require("./app");
 
 const PORT = process.env.PORT || 5003;
+// Change in DB URL to connect to the correct database for the job-service
 
 async function startServer() {
     try {
