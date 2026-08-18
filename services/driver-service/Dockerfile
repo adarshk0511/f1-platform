@@ -20,6 +20,6 @@ COPY --from=builder /app/src ./src
 
 COPY --from=builder /app/package.json ./package.json
 
-EXPOSE 5000
+EXPOSE 5002
 
 CMD ["npm","start"]
