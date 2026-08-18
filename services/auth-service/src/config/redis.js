@@ -1,19 +1,18 @@
-const { createClient } =
-    require("redis");
+const { createClient } = require("redis");
 
-const redisClient =
-    createClient({
-        url: "redis://localhost:6379"
-    });
+const config = require("./index");
+const logger = require("./logger");
 
-redisClient.on(
-    "error",
-    (err) =>
-        console.log(
-            "Redis Error",
-            err
-        )
+logger.info(
+    `Connecting to Redis at ${config.redis.host}:${config.redis.port}`
 );
 
-module.exports =
-    redisClient;
+const redisClient = createClient({
+    url: `redis://${config.redis.host}:${config.redis.port}`,
+});
+
+redisClient.on("error", (err) => {
+    logger.error(err, "Redis Error");
+});
+
+module.exports = redisClient;
