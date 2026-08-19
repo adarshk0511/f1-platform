@@ -1,0 +1,151 @@
+services:
+
+  mongodb:
+    image: mongo:8
+    container_name: f1-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - f1-network
+
+  redis:
+    image: redis:8-alpine
+    container_name: f1-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - f1-network
+
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    container_name: f1-auth-service
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 5001
+
+      MONGO_URI: mongodb://mongodb:27017/f1_auth
+
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - f1-network
+
+  driver-service:
+    build:
+      context: ./services/driver-service
+      dockerfile: Dockerfile
+    container_name: f1-driver-service
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 5002
+
+      MONGO_URI: mongodb://mongodb:27017/f1_driver
+
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+      JOB_SERVICE_URL: http://job-service:5003
+
+      INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY}
+      GATEWAY_INTERNAL_KEY: ${GATEWAY_INTERNAL_KEY}
+
+      ACCESS_TOKEN_PUBLIC_KEY: ${ACCESS_TOKEN_PUBLIC_KEY}
+    depends_on:
+      - mongodb
+      - redis
+      - job-service
+    networks:
+      - f1-network
+
+  job-service:
+    build:
+      context: ./services/job-service
+      dockerfile: Dockerfile
+    container_name: f1-job-service
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 5003
+
+      MONGO_URI: mongodb://mongodb:27017/f1_job
+
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+      INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY}
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - f1-network
+
+  job-worker:
+    build:
+      context: ./services/job-service
+      dockerfile: Dockerfile
+    container_name: f1-job-worker
+    restart: unless-stopped
+    command: ["npm", "run", "worker"]
+    environment:
+      NODE_ENV: production
+
+      MONGO_URI: mongodb://mongodb:27017/f1_job
+
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - f1-network
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: f1-gateway
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+
+      AUTH_SERVICE_URL: http://auth-service:5001
+      DRIVER_SERVICE_URL: http://driver-service:5002
+      JOB_SERVICE_URL: http://job-service:5003
+
+      ACCESS_TOKEN_PUBLIC_KEY: ${ACCESS_TOKEN_PUBLIC_KEY}
+      JOB_SERVICE_INTERNAL_KEY: ${JOB_SERVICE_INTERNAL_KEY}
+    depends_on:
+      - auth-service
+      - driver-service
+      - job-service
+    networks:
+      - f1-network
+
+
+networks:
+
+  f1-network:
+    driver: bridge
+
+
+volumes:
+
+  mongodb_data:
