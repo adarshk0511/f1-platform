@@ -17,9 +17,9 @@ COPY package*.json ./
 RUN npm install --omit=dev
 
 COPY --from=builder /app/src ./src
-
+COPY --from=builder /app/keys ./keys
 COPY --from=builder /app/package.json ./package.json
 
 EXPOSE 5002
 
-CMD ["npm","start"]
+CMD ["npm", "start"]

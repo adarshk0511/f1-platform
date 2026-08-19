@@ -63,7 +63,7 @@ services:
       INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY}
       GATEWAY_INTERNAL_KEY: ${GATEWAY_INTERNAL_KEY}
 
-      ACCESS_TOKEN_PUBLIC_KEY: ${ACCESS_TOKEN_PUBLIC_KEY}
+      # ACCESS_TOKEN_PUBLIC_KEY: ${ACCESS_TOKEN_PUBLIC_KEY}
     depends_on:
       - mongodb
       - redis
@@ -130,7 +130,7 @@ services:
       DRIVER_SERVICE_URL: http://driver-service:5002
       JOB_SERVICE_URL: http://job-service:5003
 
-      ACCESS_TOKEN_PUBLIC_KEY: ${ACCESS_TOKEN_PUBLIC_KEY}
+      # ACCESS_TOKEN_PUBLIC_KEY: ${ACCESS_TOKEN_PUBLIC_KEY}
       JOB_SERVICE_INTERNAL_KEY: ${JOB_SERVICE_INTERNAL_KEY}
     depends_on:
       - auth-service
