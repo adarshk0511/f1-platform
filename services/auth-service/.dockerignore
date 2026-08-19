@@ -1,7 +1,8 @@
 node_modules
 npm-debug.log
-.env
 .git
 .gitignore
+.env
 tests
 coverage
+keys/access-token-private.pem
