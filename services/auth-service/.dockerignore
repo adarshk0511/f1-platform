@@ -5,4 +5,5 @@ npm-debug.log
 .env
 tests
 coverage
-keys/access-token-private.pem
+keys/*
+!keys/access-token-public.pem
