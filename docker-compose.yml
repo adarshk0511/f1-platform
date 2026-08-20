@@ -129,6 +129,8 @@ services:
       JOB_SERVICE_URL: http://job-service:5003
 
       JOB_SERVICE_INTERNAL_KEY: ${JOB_SERVICE_INTERNAL_KEY}
+      GATEWAY_INTERNAL_KEY: ${GATEWAY_INTERNAL_KEY}
+      
     depends_on:
       - auth-service
       - driver-service
