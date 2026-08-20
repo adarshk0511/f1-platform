@@ -1,8 +1,10 @@
 const { Queue } = require("bullmq");
 
+const config = require("./index");
+
 const connection = {
-    host: "localhost",
-    port: 6379,
+    host: config.redis.host,
+    port: config.redis.port,
 };
 
 const importQueue = new Queue(
