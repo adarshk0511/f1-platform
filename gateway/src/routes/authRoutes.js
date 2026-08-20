@@ -21,10 +21,8 @@ router.use(
 
         proxyTimeout: 10000,
 
-        pathRewrite: (path) => {
-
-            return `/api/v1/auth${path}`;
-
+        pathRewrite: {
+            "^/": "/api/v1/auth/",
         },
 
         on: {
@@ -62,8 +60,7 @@ router.use(
 
                         success: false,
 
-                        message:
-                            "Auth Service unavailable",
+                        message: "Auth Service unavailable",
 
                     });
 
