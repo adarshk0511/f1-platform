@@ -7,6 +7,8 @@ const compression = require("compression");
 const driverRoutes = require("./routes/driverRoutes");
 const gatewayAuth =
     require("./middleware/gatewayAuth");
+const internalImportRoutes =
+    require("./routes/internalImportRoutes");
 
 const app = express();
 
@@ -22,6 +24,11 @@ app.use(
     "/api/v1/drivers",
     gatewayAuth,
     driverRoutes
+);
+
+app.use(
+    "/internal/drivers",
+    internalImportRoutes
 );
 
 module.exports = app;

@@ -29,6 +29,13 @@ const authorize =
 const validateDriver = require("../middleware/validateDriver");
 //const apiKey = require("../middleware/apiKey");
 
+const serviceAuth =
+    require("../middleware/serviceAuth");
+
+const {
+    importDrivers,
+} = require("../controllers/internalImportController");
+
 /**
  * @swagger
  * /api/drivers:
@@ -82,6 +89,12 @@ router.get(
     "/jobs/:jobId",
     authenticate,
     getJobStatus
+);
+
+router.post(
+    "/internal-import",
+    serviceAuth,
+    importDrivers
 );
 
 router.get("/:abbr",authenticate, getDriverByAbbreviation);
