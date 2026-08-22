@@ -108,9 +108,12 @@ services:
 
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      DRIVER_SERVICE_URL: http://driver-service:5002
+      INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY}
     depends_on:
       - mongodb
       - redis
+      - driver-service
     networks:
       - f1-network
 
