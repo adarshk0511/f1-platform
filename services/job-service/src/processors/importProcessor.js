@@ -1,6 +1,8 @@
 const jobPersistenceService =
 require("../services/jobPersistenceService");
 const logger = require("../config/logger");
+const driverClient =
+    require("../clients/driverClient");
 
 const sleep = (ms) =>
     new Promise((resolve) =>
@@ -30,7 +32,9 @@ async function processImport(job) {
 
 }
 
-        await sleep(5000);
+        await driverClient.importDrivers(
+    job.data
+);
 
         await jobPersistenceService.markCompleted(dbJob);
 

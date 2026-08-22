@@ -2,17 +2,31 @@ const Job = require("../models/Job");
 
 async function createJob(job) {
 
-    return await Job.create({
+    return await Job.findOneAndUpdate(
 
-        bullJobId: job.id,
+        {
+            bullJobId: job.id,
+        },
 
-        type: "IMPORT_RACE",
+        {
+            $set: {
+                status: "PROCESSING",
+                error: null,
+                payload: job.data,
+                type: "IMPORT_RACE",
+            },
 
-        status: "PROCESSING",
+            $setOnInsert: {
+                bullJobId: job.id,
+            },
+        },
 
-        payload: job.data
+        {
+            new: true,
+            upsert: true,
+        }
 
-    });
+    );
 
 }
 

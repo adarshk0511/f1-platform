@@ -86,6 +86,8 @@ services:
       REDIS_PORT: 6379
 
       INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY}
+      DRIVER_SERVICE_URL: http://driver-service:5002
+      
     depends_on:
       - mongodb
       - redis
