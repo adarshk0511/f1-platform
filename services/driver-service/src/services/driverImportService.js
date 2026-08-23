@@ -8,62 +8,83 @@ const F1_API_URL =
 const importDrivers = async (season = 2026) => {
 
     const url =
-        `${F1_API_URL}/${season}/drivers/?limit=100`;
+        `${F1_API_URL}/${season}/driverstandings/?limit=100`;
 
     const response =
         await axios.get(url);
 
-    const drivers =
-        response.data?.MRData?.DriverTable?.Drivers || [];
+    const standings =
+        response.data?.MRData
+            ?.StandingsTable
+            ?.StandingsLists?.[0]
+            ?.DriverStandings || [];
 
     const validDrivers =
-        drivers.filter(
-            driver =>
-                driver.permanentNumber &&
-                driver.code
+        standings.filter(driver =>
+            driver.Driver?.permanentNumber &&
+            driver.Driver?.code &&
+            driver.Constructors?.[0]?.name
         );
 
     const operations =
-        validDrivers.map(driver => ({
+        validDrivers.map(entry => {
 
-            updateOne: {
+            const driver = entry.Driver;
 
-                filter: {
-                    driverNumber:
-                        Number(
-                            driver.permanentNumber
-                        )
-                },
+            const constructor =
+                entry.Constructors[0];
 
-                update: {
+            return {
 
-                    $set: {
+                updateOne: {
 
-                        fullName:
-                            `${driver.givenName} ${driver.familyName}`,
+                    filter: {
+                        driverNumber:
+                            Number(
+                                driver.permanentNumber
+                            )
+                    },
 
-                        abbreviation:
-                            driver.code,
+                    update: {
 
-                        nationality:
-                            driver.nationality,
+                        $set: {
 
-                    }
+                            fullName:
+                                `${driver.givenName} ${driver.familyName}`,
 
-                },
+                            abbreviation:
+                                driver.code,
 
-                upsert: true
+                            team:
+                                constructor.name,
 
-            }
+                            nationality:
+                                driver.nationality,
 
-        }));
+                        },
+
+                        $setOnInsert: {
+
+                            championships: 0
+
+                        }
+
+                    },
+
+                    upsert: true
+
+                }
+
+            };
+
+        });
 
     if (operations.length === 0) {
 
         return {
             imported: 0,
             message:
-                "No valid drivers found"
+                `No valid drivers found for ${season}`
         };
 
     }
@@ -75,18 +96,19 @@ const importDrivers = async (season = 2026) => {
 
     return {
 
-        imported:
-            result.upsertedCount +
+        season,
+
+        processed:
+            validDrivers.length,
+
+        inserted:
+            result.upsertedCount,
+
+        updated:
             result.modifiedCount,
 
         matched:
-            result.matchedCount,
-
-        upserted:
-            result.upsertedCount,
-
-        total:
-            validDrivers.length
+            result.matchedCount
 
     };
 

@@ -1,30 +1,30 @@
-const importDrivers = async (req, res, next) => {
+const driverImportService =
+    require("../services/driverImportService");
+
+const importDrivers = async (
+    req,
+    res,
+    next
+) => {
 
     try {
 
-        const { raceName } = req.body;
+        const season =
+            Number(req.body.season) || 2026;
 
-        if (!raceName) {
-
-            return res.status(400).json({
-                success: false,
-                message: "raceName is required",
-            });
-
-        }
-
-        // Temporary implementation.
-        // Actual F1 data import will be added next.
+        const result =
+            await driverImportService.importDrivers(
+                season
+            );
 
         res.status(200).json({
 
             success: true,
 
-            message: "Driver import processed",
+            message:
+                "Drivers imported successfully",
 
-            data: {
-                raceName,
-            },
+            data: result
 
         });
 
@@ -37,5 +37,5 @@ const importDrivers = async (req, res, next) => {
 };
 
 module.exports = {
-    importDrivers,
+    importDrivers
 };
