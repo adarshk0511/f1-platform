@@ -60,6 +60,7 @@ services:
       REDIS_PORT: 6379
 
       JOB_SERVICE_URL: http://job-service:5003
+      F1_API_URL: https://api.jolpi.ca/ergast/f1
 
       INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY}
       GATEWAY_INTERNAL_KEY: ${GATEWAY_INTERNAL_KEY}
