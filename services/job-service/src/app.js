@@ -19,4 +19,12 @@ app.use(
     jobRoutes
 );
 
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        success: true,
+        service: "driver-service",
+        status: "UP"
+    });
+});
+
 module.exports = app;
