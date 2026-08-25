@@ -101,7 +101,7 @@ services:
       dockerfile: Dockerfile
     container_name: f1-job-worker
     restart: unless-stopped
-    command: ["npm", "run", "worker"]
+    command: ["node", "src/workers/importWorker.js"]
     environment:
       NODE_ENV: production
 
