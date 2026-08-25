@@ -102,6 +102,10 @@ services:
     container_name: f1-job-worker
     restart: unless-stopped
     command: ["node", "src/workers/importWorker.js"]
+
+    profiles:
+      - worker
+      
     environment:
       NODE_ENV: production
 
