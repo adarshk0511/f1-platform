@@ -48,7 +48,6 @@ services:
     build:
       context: ./services/driver-service
       dockerfile: Dockerfile
-    container_name: f1-driver-service
     restart: unless-stopped
     environment:
       NODE_ENV: production
@@ -105,7 +104,7 @@ services:
 
     profiles:
       - worker
-      
+
     environment:
       NODE_ENV: production
 

@@ -31,12 +31,22 @@ app.use(
     internalImportRoutes
 );
 
+const os = require("os");
+
 app.get("/health", (req, res) => {
+
     res.status(200).json({
+
         success: true,
+
         service: "driver-service",
-        status: "UP"
+
+        status: "UP",
+
+        instance: os.hostname()
+
     });
+
 });
 
 module.exports = app;

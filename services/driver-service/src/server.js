@@ -25,8 +25,8 @@ async function startServer() {
         server = app.listen(PORT, () => {
 
             logger.info(
-                `Driver Service running on ${PORT}`
-            );
+    `Driver Service running on ${PORT} - ${require("os").hostname()}`
+);
 
         });
 
