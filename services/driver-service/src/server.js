@@ -15,15 +15,12 @@ async function startServer() {
     try {
 
         await connectDB();
-
         logger.info("MongoDB Connected");
-
+        
         await redisClient.connect();
-
         logger.info("Redis Connected");
-
+        
         server = app.listen(PORT, () => {
-
             logger.info(
     `Driver Service running on ${PORT} - ${require("os").hostname()}`
 );
@@ -31,11 +28,8 @@ async function startServer() {
         });
 
     } catch (err) {
-
         logger.error(err);
-
         process.exit(1);
-
     }
 
 }
