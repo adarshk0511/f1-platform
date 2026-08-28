@@ -53,7 +53,6 @@ async function gracefulShutdown(signal) {
                 if (redisClient.isOpen) {
 
                     await redisClient.quit();
-
                     logger.info(
                         "Redis connection closed"
                     );
@@ -62,13 +61,11 @@ async function gracefulShutdown(signal) {
 
                 const mongoose =
                     require("mongoose");
-
                 await mongoose.connection.close();
 
                 logger.info(
                     "MongoDB connection closed"
                 );
-
                 logger.info(
                     "Graceful shutdown complete"
                 );
