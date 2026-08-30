@@ -78,7 +78,6 @@ async function gracefulShutdown(signal) {
                     err,
                     "Error during shutdown"
                 );
-
                 process.exit(1);
 
             }
