@@ -57,7 +57,6 @@ async function gracefulShutdown(signal) {
                 logger.info(
                     "MongoDB connection closed"
                 );
-
                 logger.info(
                     "Graceful shutdown complete"
                 );
