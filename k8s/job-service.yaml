@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: job-service
+  namespace: f1-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: job-service
+
+  template:
+    metadata:
+      labels:
+        app: job-service
+
+    spec:
+      containers:
+        - name: job-service
+          image: f1-platform-job-service:latest
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 5003
+
+          env:
+            - name: NODE_ENV
+              value: "production"
+
+            - name: PORT
+              value: "5003"
+
+            - name: MONGO_URI
+              value: "mongodb://mongodb:27017/f1_job"
+
+            - name: REDIS_HOST
+              value: "redis"
+
+            - name: REDIS_PORT
+              value: "6379"
+
+            - name: DRIVER_SERVICE_URL
+              value: "http://driver-service:5002"
+
+            - name: INTERNAL_SERVICE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: f1-service-secrets
+                  key: INTERNAL_SERVICE_KEY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: job-service
+  namespace: f1-platform
+spec:
+  selector:
+    app: job-service
+
+  ports:
+    - port: 5003
+      targetPort: 5003
