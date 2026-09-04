@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: job-worker
+  namespace: f1-platform
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: job-worker
+
+  template:
+    metadata:
+      labels:
+        app: job-worker
+
+    spec:
+      containers:
+        - name: job-worker
+          image: f1-platform-job-service:latest
+          imagePullPolicy: IfNotPresent
+
+          command: ["npm", "run", "worker"]
+
+          env:
+            - name: NODE_ENV
+              value: "production"
+
+            - name: MONGO_URI
+              value: "mongodb://mongodb:27017/f1_job"
+
+            - name: REDIS_HOST
+              value: "redis"
+
+            - name: REDIS_PORT
+              value: "6379"
+
+            - name: DRIVER_SERVICE_URL
+              value: "http://driver-service:5002"
+
+            - name: INTERNAL_SERVICE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: f1-service-secrets
+                  key: INTERNAL_SERVICE_KEY
