@@ -1,5 +1,4 @@
 const { Queue } = require("bullmq");
-
 const config = require("./index");
 
 const connection = {
@@ -17,7 +16,16 @@ const deadLetterQueue = new Queue(
     { connection }
 );
 
+async function initializeQueues() {
+
+    await importQueue.waitUntilReady();
+    await deadLetterQueue.waitUntilReady();
+
+    console.log("BullMQ queues ready");
+}
+
 module.exports = {
     importQueue,
     deadLetterQueue,
+    initializeQueues
 };
