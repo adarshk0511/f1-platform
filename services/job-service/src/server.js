@@ -5,6 +5,9 @@ const mongoose = require("mongoose");
 const connectDB = require("./config/db");
 const logger = require("./config/logger");
 const app = require("./app");
+const {
+    initializeQueues
+} = require("./config/queue");
 
 const PORT = process.env.PORT || 5001;
 
@@ -18,6 +21,8 @@ async function startServer() {
 
         logger.info("MongoDB Connected");
 
+        await initializeQueues();
+        
         server = app.listen(PORT, () => {
 
             logger.info(

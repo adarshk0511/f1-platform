@@ -1,5 +1,5 @@
 const { Queue } = require("bullmq");
-const config = require("./index");
+const config = require("./index");  
 
 const connection = {
     host: config.redis.host,
