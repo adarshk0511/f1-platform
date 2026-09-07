@@ -26,7 +26,7 @@ async function startServer() {
         server = app.listen(PORT, () => {
 
             logger.info(
-                `Auth Service running on ${PORT}`
+                `Job Service running on ${PORT}`
             );
 
         });
