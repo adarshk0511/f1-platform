@@ -38,7 +38,7 @@ app.get("/health", (req, res) => {
     res.status(200).json({
         success: true,
         service: "driver-service",
-        status: "UP",
+        status: "UP-v2",
         instance: os.hostname()
     });
 
