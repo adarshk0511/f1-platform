@@ -16,50 +16,31 @@ const server = app.listen(
     }
 );
 
-async function gracefulShutdown(signal) {
+function gracefulShutdown(signal) {
 
-    logger.info(
-        `${signal} received. Shutting down worker...`
+    console.log(
+        `${signal} received. Shutting down API Gateway...`
     );
 
-    try {
+    server.close(() => {
 
-        if (worker) {
-
-            await worker.close();
-
-            logger.info(
-                "BullMQ worker closed"
-            );
-
-        }
-
-        const mongoose =
-            require("mongoose");
-
-        await mongoose.connection.close();
-
-        logger.info(
-            "MongoDB connection closed"
-        );
-
-        logger.info(
-            "Worker graceful shutdown complete"
+        console.log(
+            "API Gateway stopped accepting new connections"
         );
 
         process.exit(0);
 
-    } catch (err) {
+    });
 
-        logger.error(
-            err,
-            "Worker shutdown failed"
+    setTimeout(() => {
+
+        console.error(
+            "Forced shutdown after timeout"
         );
 
         process.exit(1);
 
-    }
-
+    }, 10000);
 }
 
 process.on(
