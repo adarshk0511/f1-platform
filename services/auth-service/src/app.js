@@ -33,7 +33,7 @@ app.use(
 app.get("/health", (req, res) => {
     res.status(200).json({
         success: true,
-        service: "driver-service",
+        service: "auth-service",
         status: "UP"
     });
 });
