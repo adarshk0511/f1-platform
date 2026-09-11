@@ -23,6 +23,11 @@ spec:
           image: f1-platform-auth-service:latest
           imagePullPolicy: IfNotPresent
 
+          volumeMounts:
+            - name: auth-private-key
+              mountPath: /app/keys
+              readOnly: true
+
           ports:
             - containerPort: 5001
 
@@ -71,6 +76,11 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+
+      volumes:
+        - name: auth-private-key
+          secret:
+            secretName: auth-private-key
 
 ---
 
