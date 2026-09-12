@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-config
+  namespace: f1-platform
+data:
+  PORT: "8080"
+
+  AUTH_SERVICE_URL: "http://auth-service:5001"
+  DRIVER_SERVICE_URL: "http://driver-service:5002"
+  JOB_SERVICE_URL: "http://job-service:5003"
