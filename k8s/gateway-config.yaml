@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: gateway-config
   namespace: f1-platform
+  
 data:
   PORT: "8080"
 
