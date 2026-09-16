@@ -64,6 +64,12 @@ spec:
                   key: INTERNAL_SERVICE_KEY
                   name: f1-service-secrets
 
+            - name: GATEWAY_INTERNAL_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gateway-secrets
+                  key: GATEWAY_INTERNAL_KEY
+
           image: f1-platform-driver-service
           imagePullPolicy: IfNotPresent
           name: f1-platform-driver-service
