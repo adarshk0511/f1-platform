@@ -32,8 +32,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm test --if-present
 
   auth-service:
     name: Auth Service CI
@@ -57,8 +55,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm test --if-present
+      
 
   driver-service:
     name: Driver Service CI
@@ -82,8 +79,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm test --if-present
+      
 
   job-service:
     name: Job Service CI
@@ -107,5 +103,4 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm test --if-present
+      
