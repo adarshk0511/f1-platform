@@ -8,7 +8,10 @@ on:
   pull_request:
     branches:
       - main
-
+permissions:
+  contents: read
+  packages: write
+  
 jobs:
   gateway:
     name: Gateway CI
