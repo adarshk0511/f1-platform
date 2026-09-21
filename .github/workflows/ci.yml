@@ -107,29 +107,60 @@ jobs:
         run: npm ci
 
   docker-build:
-        name: Docker Build
-        runs-on: ubuntu-latest
+      name: Docker Build & Push
+      runs-on: ubuntu-latest
 
-        needs:
-          - gateway
-          - auth-service
-          - driver-service
-          - job-service
+      needs:
+        - gateway
+        - auth-service
+        - driver-service
+        - job-service
 
-        steps:
-          - name: Checkout
-            uses: actions/checkout@v4
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
 
-          - name: Build Gateway image
-            run: docker build -t f1-platform-gateway:ci ./gateway
+        - name: Log in to GHCR
+          if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+          uses: docker/login-action@v3
+          with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
 
-          - name: Build Auth Service image
-            run: docker build -t f1-platform-auth-service:ci ./services/auth-service
+        - name: Build and push Gateway
+          uses: docker/build-push-action@v6
+          with:
+            context: ./gateway
+            push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+            tags: |
+              ghcr.io/${{ github.repository_owner }}/f1-platform-gateway:${{ github.sha }}
+              ghcr.io/${{ github.repository_owner }}/f1-platform-gateway:latest
 
-          - name: Build Driver Service image
-            run: docker build -t f1-platform-driver-service:ci ./services/driver-service
+        - name: Build and push Auth Service
+          uses: docker/build-push-action@v6
+          with:
+            context: ./services/auth-service
+            push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+            tags: |
+              ghcr.io/${{ github.repository_owner }}/f1-platform-auth-service:${{ github.sha }}
+              ghcr.io/${{ github.repository_owner }}/f1-platform-auth-service:latest
 
-          - name: Build Job Service image
-            run: docker build -t f1-platform-job-service:ci ./services/job-service
+        - name: Build and push Driver Service
+          uses: docker/build-push-action@v6
+          with:
+            context: ./services/driver-service
+            push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+            tags: |
+              ghcr.io/${{ github.repository_owner }}/f1-platform-driver-service:${{ github.sha }}
+              ghcr.io/${{ github.repository_owner }}/f1-platform-driver-service:latest
 
-          
+        - name: Build and push Job Service
+          uses: docker/build-push-action@v6
+          with:
+            context: ./services/job-service
+            push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+            tags: |
+              ghcr.io/${{ github.repository_owner }}/f1-platform-job-service:${{ github.sha }}
+              ghcr.io/${{ github.repository_owner }}/f1-platform-job-service:latest
+            
