@@ -120,6 +120,23 @@ jobs:
         - name: Checkout
           uses: actions/checkout@v4
 
+        - name: Debug Gateway files
+          run: |
+            echo "=== Gateway keys ==="
+            ls -la gateway/keys || true
+
+            echo "=== Public key ==="
+            ls -l gateway/keys/access-token-public.pem || true
+
+            echo "=== Dockerignore ==="
+            cat gateway/.dockerignore || true
+
+            echo "=== Git tracked files ==="
+            git ls-files gateway/keys
+
+            echo "=== Commit ==="
+            git rev-parse HEAD
+
         - name: Log in to GHCR
           if: github.event_name == 'push' && github.ref == 'refs/heads/main'
           uses: docker/login-action@v3
