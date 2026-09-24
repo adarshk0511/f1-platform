@@ -24,8 +24,8 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: f1-platform-gateway:latest
-          imagePullPolicy: IfNotPresent
+          image: ghcr.io/adarshk0511/f1-platform-gateway:latest
+          imagePullPolicy: Always
 
           ports:
             - containerPort: 8080

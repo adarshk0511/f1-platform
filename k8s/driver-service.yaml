@@ -70,9 +70,9 @@ spec:
                   name: gateway-secrets
                   key: GATEWAY_INTERNAL_KEY
 
-          image: f1-platform-driver-service
-          imagePullPolicy: IfNotPresent
-          name: f1-platform-driver-service
+            - name: f1-platform-driver-service
+              image: ghcr.io/adarshk0511/f1-platform-driver-service:latest
+              imagePullPolicy: Always
 
           ports:
             - containerPort: 5002

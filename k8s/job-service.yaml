@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
         - name: job-service
-          image: f1-platform-job-service:latest
-          imagePullPolicy: IfNotPresent
+          image: ghcr.io/adarshk0511/f1-platform-job-service:latest
+          imagePullPolicy: Always
 
           ports:
             - containerPort: 5003
