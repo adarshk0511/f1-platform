@@ -16,7 +16,6 @@ const JOB_SERVICE_INTERNAL_KEY =
 console.log(
     "Job Service key loaded:",
     Boolean(JOB_SERVICE_INTERNAL_KEY),
-    JOB_SERVICE_INTERNAL_KEY
 );
 
 
