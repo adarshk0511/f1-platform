@@ -9,6 +9,8 @@ const gatewayAuth =
     require("./middleware/gatewayAuth");
 const internalImportRoutes =
     require("./routes/internalImportRoutes");
+const errorHandler =
+    require("./middleware/errorHandler");
 
 const app = express();
 
@@ -43,5 +45,7 @@ app.get("/health", (req, res) => {
     });
 
 });
+
+app.use(errorHandler);
 
 module.exports = app;
