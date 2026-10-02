@@ -1,11 +1,13 @@
-const request = require("supertest");
+jest.mock("../src/utils/jwt", () => ({
+    generateAccessToken: jest.fn(),
+    generateRefreshToken: jest.fn(),
+}));
 
+const request = require("supertest");
 const app = require("../src/app");
 
 describe("Auth Service Health API", () => {
-
     test("GET /health returns service health", async () => {
-
         const response =
             await request(app)
                 .get("/health");
@@ -21,7 +23,5 @@ describe("Auth Service Health API", () => {
                     status: "UP",
                 })
             );
-
     });
-
 });
