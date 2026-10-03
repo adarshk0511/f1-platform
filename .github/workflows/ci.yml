@@ -110,6 +110,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run tests
+        run: npm test
+        working-directory: services/job-service
+
   docker-build:
       name: Docker Build & Push
       runs-on: ubuntu-latest
