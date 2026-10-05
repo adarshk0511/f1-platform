@@ -1,0 +1,52 @@
+name: CD
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+env:
+  NAMESPACE: f1-platform
+
+  GATEWAY_IMAGE: ghcr.io/adarshk0511/f1-platform-gateway
+  AUTH_IMAGE: ghcr.io/adarshk0511/f1-platform-auth-service
+  DRIVER_IMAGE: ghcr.io/adarshk0511/f1-platform-driver-service
+  JOB_IMAGE: ghcr.io/adarshk0511/f1-platform-job-service
+
+jobs:
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set image tag
+        run: |
+          echo "IMAGE_TAG=${GITHUB_SHA}" >> "$GITHUB_ENV"
+
+      - name: Show deployment version
+        run: |
+          echo "Deploying commit:"
+          echo "${IMAGE_TAG}"
+
+      # Kubernetes authentication will be added
+      # when the cluster is moved to a reachable environment.
+
+      - name: Deployment plan
+        run: |
+          echo "Gateway:"
+          echo "${GATEWAY_IMAGE}:${IMAGE_TAG}"
+
+          echo "Auth:"
+          echo "${AUTH_IMAGE}:${IMAGE_TAG}"
+
+          echo "Driver:"
+          echo "${DRIVER_IMAGE}:${IMAGE_TAG}"
+
+          echo "Job:"
+          echo "${JOB_IMAGE}:${IMAGE_TAG}"
