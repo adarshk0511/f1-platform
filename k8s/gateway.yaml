@@ -4,7 +4,7 @@ metadata:
   name: api-gateway
   namespace: f1-platform
 spec:
-  replicas: 2
+  replicas: 1
 
   selector:
     matchLabels:

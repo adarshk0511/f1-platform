@@ -4,7 +4,7 @@ metadata:
   name: driver-service
   namespace: f1-platform
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: driver-service

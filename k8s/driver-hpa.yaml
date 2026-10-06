@@ -11,8 +11,8 @@ spec:
     kind: Deployment
     name: driver-service
 
-  minReplicas: 3
-  maxReplicas: 6
+  minReplicas: 1
+  maxReplicas: 1
 
   metrics:
     - type: Resource
