@@ -5,83 +5,105 @@ const mongoose = require("mongoose");
 const connectDB = require("./config/db");
 const logger = require("./config/logger");
 const app = require("./app");
+
 const {
-    initializeQueues
+    initializeQueues,
+    closeQueues,
 } = require("./config/queue");
 
 const PORT = process.env.PORT || 5001;
 
 let server;
+let isShuttingDown = false;
 
 async function startServer() {
-
     try {
-
         await connectDB();
 
         logger.info("MongoDB Connected");
 
         await initializeQueues();
-        
-        server = app.listen(PORT, () => {
 
+        server = app.listen(PORT, () => {
             logger.info(
                 `Job Service running on ${PORT}`
             );
-
         });
 
     } catch (err) {
-
-        logger.error(err);
+        logger.error(err, "Failed to start Job Service");
         process.exit(1);
-
     }
-
 }
 
 async function gracefulShutdown(signal) {
+    if (isShuttingDown) {
+        logger.warn("Shutdown already in progress");
+        return;
+    }
+
+    isShuttingDown = true;
 
     logger.info(
         `${signal} received. Starting graceful shutdown...`
     );
 
-    if (server) {
+    const shutdownTimeout = setTimeout(() => {
+        logger.error(
+            "Graceful shutdown timed out. Forcing exit."
+        );
 
-        server.close(async () => {
+        process.exit(1);
+    }, 10000);
+
+    try {
+        // Stop accepting new HTTP requests
+        if (server) {
+            await new Promise((resolve, reject) => {
+                server.close((err) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+
+                    logger.info("HTTP server closed");
+                    resolve();
+                });
+            });
+        }
+
+        // Close BullMQ queues
+        await closeQueues();
+
+        logger.info("BullMQ queues closed");
+
+        // Close MongoDB
+        if (mongoose.connection.readyState !== 0) {
+            await mongoose.connection.close();
 
             logger.info(
-                "HTTP server closed"
+                "MongoDB connection closed"
             );
+        }
 
-            try {
+        clearTimeout(shutdownTimeout);
 
-                await mongoose.connection.close();
+        logger.info(
+            "Job Service graceful shutdown complete"
+        );
 
-                logger.info(
-                    "MongoDB connection closed"
-                );
-                logger.info(
-                    "Graceful shutdown complete"
-                );
+        process.exit(0);
 
-                process.exit(0);
+    } catch (err) {
+        clearTimeout(shutdownTimeout);
 
-            } catch (err) {
+        logger.error(
+            err,
+            "Job Service shutdown failed"
+        );
 
-                logger.error(
-                    err,
-                    "Error during shutdown"
-                );
-
-                process.exit(1);
-
-            }
-
-        });
-
+        process.exit(1);
     }
-
 }
 
 process.on(

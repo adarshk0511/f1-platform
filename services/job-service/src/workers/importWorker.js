@@ -1,11 +1,10 @@
 require("dotenv").config();
 
 const { Worker } = require("bullmq");
+const mongoose = require("mongoose");
 
 const connectDB = require("../config/db");
-
 const logger = require("../config/logger");
-
 const config = require("../config");
 
 const {
@@ -13,131 +12,120 @@ const {
 } = require("../processors/importProcessor");
 
 let worker;
+let isShuttingDown = false;
 
 async function startWorker() {
-
     try {
-
-        // 1. Connect Mongo
+        // Connect MongoDB
         await connectDB();
 
         logger.info("Mongo Connected");
 
-        // 2. Create Worker
+        // Create BullMQ Worker
         worker = new Worker(
-
             "import-race",
 
             async (job) => {
-
-                logger.info({
-
-                    jobId: job.id,
-
-                    payload: job.data,
-
-                });
+                logger.info(
+                    {
+                        jobId: job.id,
+                        payload: job.data,
+                    },
+                    "Processing import job"
+                );
 
                 await processImport(job);
-
             },
 
             {
-
                 connection: {
-
                     host: config.redis.host,
-
                     port: config.redis.port,
-
                 },
-
             }
-
         );
 
         worker.on("ready", () => {
-
             logger.info("Import Worker Ready");
-
         });
 
         worker.on("completed", (job) => {
-
             logger.info(
-
                 {
-
                     jobId: job.id,
-
                 },
-
                 "Job Completed"
-
             );
-
         });
 
-        worker.on(
+        worker.on("failed", (job, err) => {
+            logger.error(
+                {
+                    jobId: job?.id,
+                    attempt: job?.attemptsMade,
+                    maxAttempts: job?.opts?.attempts,
+                },
+                err.message
+            );
+        });
 
-    "failed",
-
-    (job, err)=>{
-
-        logger.error({
-
-            jobId:job.id,
-
-            attempt:job.attemptsMade,
-
-            maxAttempts:
-
-                job.opts.attempts
-
-        },err.message);
-
-    }
-
-);
+        worker.on("error", (err) => {
+            logger.error(
+                err,
+                "BullMQ worker error"
+            );
+        });
 
     } catch (err) {
-
-        logger.error(err);
+        logger.error(
+            err,
+            "Failed to start import worker"
+        );
 
         process.exit(1);
-
     }
-
 }
 
-startWorker();
-
 async function gracefulShutdown(signal) {
+    if (isShuttingDown) {
+        logger.warn("Worker shutdown already in progress");
+        return;
+    }
+
+    isShuttingDown = true;
 
     logger.info(
-        `${signal} received. Shutting down worker...`
+        `${signal} received. Starting worker graceful shutdown...`
     );
 
+    const shutdownTimeout = setTimeout(() => {
+        logger.error(
+            "Worker graceful shutdown timed out. Forcing exit."
+        );
+
+        process.exit(1);
+    }, 30000);
+
     try {
-
+        // Stop accepting new jobs and wait for active work
         if (worker) {
-
             await worker.close();
 
             logger.info(
                 "BullMQ worker closed"
             );
-
         }
 
-        const mongoose =
-            require("mongoose");
+        // Close MongoDB
+        if (mongoose.connection.readyState !== 0) {
+            await mongoose.connection.close();
 
-        await mongoose.connection.close();
+            logger.info(
+                "MongoDB connection closed"
+            );
+        }
 
-        logger.info(
-            "MongoDB connection closed"
-        );
+        clearTimeout(shutdownTimeout);
 
         logger.info(
             "Worker graceful shutdown complete"
@@ -146,6 +134,7 @@ async function gracefulShutdown(signal) {
         process.exit(0);
 
     } catch (err) {
+        clearTimeout(shutdownTimeout);
 
         logger.error(
             err,
@@ -153,9 +142,7 @@ async function gracefulShutdown(signal) {
         );
 
         process.exit(1);
-
     }
-
 }
 
 process.on(
@@ -167,3 +154,5 @@ process.on(
     "SIGINT",
     () => gracefulShutdown("SIGINT")
 );
+
+startWorker();
