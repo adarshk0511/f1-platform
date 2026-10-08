@@ -21,7 +21,7 @@ spec:
           image: ghcr.io/adarshk0511/f1-platform-job-service:latest
           imagePullPolicy: Always
 
-          command: ["npm", "run", "worker"]
+          command: ["node", "src/workers/importWorker.js"]
 
           env:
             - name: NODE_ENV
