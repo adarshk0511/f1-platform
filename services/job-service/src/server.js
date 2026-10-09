@@ -74,13 +74,11 @@ async function gracefulShutdown(signal) {
 
         // Close BullMQ queues
         await closeQueues();
-
         logger.info("BullMQ queues closed");
 
         // Close MongoDB
         if (mongoose.connection.readyState !== 0) {
             await mongoose.connection.close();
-
             logger.info(
                 "MongoDB connection closed"
             );
