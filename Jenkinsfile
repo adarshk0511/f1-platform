@@ -3,7 +3,6 @@ pipeline {
 
     tools {
         nodejs 'NodeJS-22'
-        sonarQubeScanner 'SonarScanner'
     }
 
     options {
@@ -94,20 +93,29 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube-Local') {
-                    sh '''
-                        sonar-scanner \
-                            -Dsonar.projectKey=f1-platform \
-                            -Dsonar.projectName="F1 Platform" \
-                            -Dsonar.sources=gateway/src,services/auth-service/src,services/driver-service/src,services/job-service/src \
-                            -Dsonar.tests=gateway/tests,services/auth-service/tests,services/driver-service/tests,services/job-service/tests \
-                            -Dsonar.test.inclusions=**/*.test.js,**/*.spec.js \
-                            -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/dist/**,**/build/**
-                    '''
-                }
-            }
+    steps {
+        withSonarQubeEnv('SonarQube-Local') {
+            sh '''
+                set -eu
+
+                echo "Checking SonarScanner..."
+
+                if ! command -v sonar-scanner >/dev/null 2>&1; then
+                    echo "SonarScanner executable is not available on PATH."
+                    exit 1
+                fi
+
+                sonar-scanner \
+                    -Dsonar.projectKey=f1-platform \
+                    -Dsonar.projectName="F1 Platform" \
+                    -Dsonar.sources=gateway/src,services/auth-service/src,services/driver-service/src,services/job-service/src \
+                    -Dsonar.tests=gateway/tests,services/auth-service/tests,services/driver-service/tests,services/job-service/tests \
+                    -Dsonar.test.inclusions=**/*.test.js,**/*.spec.js \
+                    -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/dist/**,**/build/**
+            '''
         }
+    }
+}
     }
 
     post {
