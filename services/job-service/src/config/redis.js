@@ -1,7 +1,5 @@
 const { createClient } = require("redis");
-
 const config = require("./index");
-
 const  logger = require("./logger");
 
 logger.info(`Connecting to Redis at ${config.redis.host}:${config.redis.port}`
