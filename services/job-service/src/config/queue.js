@@ -17,7 +17,6 @@ const deadLetterQueue = new Queue("dead-letter-queue", {
 async function initializeQueues() {
     await importQueue.waitUntilReady();
     await deadLetterQueue.waitUntilReady();
-
     console.log("BullMQ queues ready");
 }
 
@@ -26,7 +25,6 @@ async function closeQueues() {
         importQueue.close(),
         deadLetterQueue.close(),
     ]);
-
     console.log("BullMQ queues closed");
 }
 
