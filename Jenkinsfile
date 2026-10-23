@@ -107,8 +107,6 @@ pipeline {
                         -Dsonar.projectKey=f1-platform \
                         -Dsonar.projectName="F1 Platform" \
                         -Dsonar.sources=gateway/src,services/auth-service/src,services/driver-service/src,services/job-service/src \
-                        -Dsonar.tests=gateway/tests,services/auth-service/tests,services/driver-service/tests,services/job-service/tests \
-                        -Dsonar.test.inclusions=**/*.test.js,**/*.spec.js \
                         -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/dist/**,**/build/**
                 """
             }
