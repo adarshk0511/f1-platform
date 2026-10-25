@@ -6,13 +6,33 @@ const jwt = require("jsonwebtoken");
 const { generateAccessToken, generateRefreshToken } = require("../utils/jwt");
 const RefreshToken = require("../models/RefreshToken");
 
+const validateEmail = (email) => {
+  if (typeof email !== "string" || !email.trim()) {
+    throw new AppError("Invalid email", 400);
+  }
+
+  return email.trim().toLowerCase();
+};
+
 const registerUser = async (userData) => {
-  console.log("User received in service:");
+  if (!userData || typeof userData !== "object" || Array.isArray(userData)) {
+    throw new AppError("Invalid registration data", 400);
+  }
 
   const { name, email, password } = userData;
 
+  if (typeof name !== "string" || !name.trim()) {
+    throw new AppError("Invalid name", 400);
+  }
+
+  if (typeof password !== "string" || password.length === 0) {
+    throw new AppError("Invalid password", 400);
+  }
+
+  const normalizedEmail = validateEmail(email);
+
   const existingUser = await User.findOne({
-    email,
+    email: normalizedEmail,
   });
 
   if (existingUser) {
@@ -22,10 +42,12 @@ const registerUser = async (userData) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await User.create({
-    name,
-    email,
+    name: name.trim(),
+    email: normalizedEmail,
     password: hashedPassword,
   });
+
+  logger.info("User registered successfully");
 
   return {
     id: user._id,
@@ -34,21 +56,32 @@ const registerUser = async (userData) => {
     role: user.role,
     createdAt: user.createdAt,
   };
-
-  logger.info("Email is available");
 };
+const user = await User.findOne({ email });
+
+Replace the beginning of loginUser() with:
 
 const loginUser = async (loginData) => {
-  const { email, password } = loginData;
-
-  // Step 1: Find the user
-  const user = await User.findOne({ email });
-
-  if (!user) {
-    throw new AppError("User not found", 404);
+  if (!loginData || typeof loginData !== "object" || Array.isArray(loginData)) {
+    throw new AppError("Invalid login data", 400);
   }
 
-  // Step 2: Compare passwords
+  const { email, password } = loginData;
+
+  const normalizedEmail = validateEmail(email);
+
+  if (typeof password !== "string" || password.length === 0) {
+    throw new AppError("Invalid email or password", 400);
+  }
+
+  const user = await User.findOne({
+    email: normalizedEmail,
+  });
+
+  if (!user) {
+    throw new AppError("Invalid email or password", 401);
+  }
+
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
   if (!isPasswordCorrect) {
