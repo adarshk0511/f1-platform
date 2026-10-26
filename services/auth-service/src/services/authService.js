@@ -57,9 +57,7 @@ const registerUser = async (userData) => {
     createdAt: user.createdAt,
   };
 };
-const user = await User.findOne({ email });
 
-Replace the beginning of loginUser() with:
 
 const loginUser = async (loginData) => {
   if (!loginData || typeof loginData !== "object" || Array.isArray(loginData)) {
