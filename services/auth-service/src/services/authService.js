@@ -129,12 +129,8 @@ const loginUser = async (loginData) => {
 };
 
 const refreshAccessToken = async (refreshToken) => {
-  if (!refreshToken) {
-    throw new AppError(
-      "Refresh token missing",
-
-      401,
-    );
+  if (typeof refreshToken !== "string" || !refreshToken.trim()) {
+    throw new AppError("Invalid refresh token", 401);
   }
 
   // Verify Refresh Token
@@ -152,7 +148,6 @@ const refreshAccessToken = async (refreshToken) => {
   if (!storedToken) {
     throw new AppError(
       "Refresh token is no longer valid",
-
       401,
     );
   }
@@ -203,8 +198,8 @@ const refreshAccessToken = async (refreshToken) => {
 
 const logoutUser = async (refreshToken) => {
 
-    if (!refreshToken) {
-        return;
+    if (typeof refreshToken !== "string" || !refreshToken.trim()) {
+        throw new AppError("Invalid refresh token", 401);
     }
 
     await RefreshToken.deleteOne({
