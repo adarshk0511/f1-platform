@@ -5,7 +5,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const compression = require("compression");
 const cookieParser = require("cookie-parser");
-
+const { connectRedis } = require("./config/redis");
 const app = express();
 
 app.use(helmet());

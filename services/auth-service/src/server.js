@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const mongoose = require("mongoose");
-
+const { connectRedis } = require("./config/redis");
 const connectDB = require("./config/db");
 const logger = require("./config/logger");
 const app = require("./app");
@@ -17,6 +17,10 @@ async function startServer() {
         await connectDB();
 
         logger.info("MongoDB Connected");
+
+        await connectRedis();
+
+        logger.info("Redis Connected");
 
         server = app.listen(PORT, () => {
 
