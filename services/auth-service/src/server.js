@@ -41,48 +41,30 @@ async function startServer() {
 }
 
 async function gracefulShutdown(signal) {
-
-    logger.info(
-        `${signal} received. Starting graceful shutdown...`
-    );
+    logger.info(`${signal} received. Starting graceful shutdown...`);
 
     if (server) {
-
         server.close(async () => {
-
-            logger.info(
-                "HTTP server closed"
-            );
+            logger.info("HTTP server closed");
 
             try {
-
                 await mongoose.connection.close();
+                logger.info("MongoDB connection closed");
 
-                logger.info(
-                    "MongoDB connection closed"
-                );
+                if (redisClient.isOpen) {
+                    await redisClient.quit();
+                    logger.info("Redis connection closed");
+                }
 
-                logger.info(
-                    "Graceful shutdown complete"
-                );
-
+                logger.info("Graceful shutdown complete");
                 process.exit(0);
 
             } catch (err) {
-
-                logger.error(
-                    err,
-                    "Error during shutdown"
-                );
-
+                logger.error(err, "Error during shutdown");
                 process.exit(1);
-
             }
-
         });
-
     }
-
 }
 
 process.on(

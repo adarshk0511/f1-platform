@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const {
-    authLimiter
-} =
-require("../middleware/rateLimiter");
+    loginLimiter,
+    registerLimiter,
+    refreshLimiter,
+} = require("../middleware/rateLimiter");
 
 const {
     registerUser,
@@ -18,18 +19,19 @@ const {
 
 router.post(
     "/register",
+    registerLimiter,
     registerUser
 );
 
-
 router.post(
     "/login",
-    authLimiter,
+    loginLimiter,
     loginUser
 );
 
 router.post(
     "/refresh",
+    refreshLimiter,
     refreshToken
 );
 
