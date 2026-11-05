@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const connectDB = require("../config/db");
 const logger = require("../config/logger");
 const config = require("../config");
+const redisClient = require("../config/redis");
 
 const {
     processImport,
@@ -20,6 +21,13 @@ async function startWorker() {
         await connectDB();
 
         logger.info("Mongo Connected");
+
+       // Connect Redis for distributed locking
+        if (!redisClient.isOpen) {
+            await redisClient.connect();
+        }
+
+        logger.info("Redis Connected");
 
         // Create BullMQ Worker
         worker = new Worker(
@@ -114,6 +122,12 @@ async function gracefulShutdown(signal) {
             logger.info(
                 "BullMQ worker closed"
             );
+        }
+
+        // Close Redis client
+        if (redisClient.isOpen) {
+            await redisClient.quit();
+            logger.info("Redis connection closed");
         }
 
         // Close MongoDB
