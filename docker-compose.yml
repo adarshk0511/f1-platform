@@ -98,7 +98,7 @@ services:
     build:
       context: ./services/job-service
       dockerfile: Dockerfile
-    container_name: f1-job-worker
+    # container_name: f1-job-worker
     restart: unless-stopped
     command: ["node", "src/workers/importWorker.js"]
 
