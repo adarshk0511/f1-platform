@@ -9,8 +9,11 @@ const authRoutes =
     require("./routes/authRoutes");
 const jobRoutes =
     require("./routes/jobRoutes");
+const helmet = require("helmet");
 
 const app = express();
+
+app.use(helmet());
 
 app.use(express.json());
 
